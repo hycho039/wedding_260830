@@ -126,7 +126,9 @@
                 const video = document.getElementById('introVideo');
                 const bgm = document.getElementById('introBgm');
                 const introContainer = document.getElementById('introContainer'); 
-                const targetUrl = 'main.html?playBgm=true';
+                
+                // 1. 경로를 현재 GitHub 레포지토리 구조에 맞춰 명확히 설정합니다.
+                const targetUrl = './main.html?playBgm=true';
                 
                 let isTransitioning = false;
 
@@ -134,47 +136,54 @@
                     if (isTransitioning) return;
                     isTransitioning = true;
 
-                    // 1. 영상 레이어 페이드 아웃
+                    console.log("이동을 시작합니다."); // 디버깅용
                     introContainer.classList.add('fade-out');
                     
-                    // 2. 0.5초 대기 후 페이지 이동 (안내 문구를 잠시 보여주고 싶다면 시간을 늘리세요)
                     setTimeout(() => {
                         window.location.href = targetUrl;
                     }, 500); 
                 };
 
+                // 2. 비디오 재생 시도 함수
                 const initialPlay = () => {
-                    const videoPromise = video.play();
-                    const bgmPromise = bgm.play();
+                    // 브라우저 정책 대응: 음소거 상태로 시작
+                    video.muted = true; 
+                    bgm.muted = true;
+
+                    video.play().then(() => {
+                        console.log("비디오 재생 성공");
+                        // 영상이 정상적으로 재생되면, 영상이 끝날 때 이동하도록 설정
+                        video.addEventListener('ended', goToMain);
+                    }).catch(error => {
+                        console.log("자동 재생 차단됨: 클릭 대기 혹은 즉시 이동");
+                        // 만약 영상 재생 자체가 안 되면 3초 후 강제 이동 기능을 활성화합니다.
+                    });
                     
-                    Promise.all([videoPromise, bgmPromise])
-                        .then(() => {
-                            console.log("Video and BGM started successfully.");
-                        })
-                        .catch(error => {
-                            console.error("Auto play failed:", error);
-                            // 자동 재생 실패 시에도 영상 레이어는 유지, 클릭 대기
-                        });
+                    bgm.play().catch(e => console.log("BGM 대기 중"));
                 };
 
-                video.addEventListener('ended', goToMain);
-
-                // 영상이 너무 길거나 멈출 경우를 대비한 강제 이동 (4.5초)
+                // 3. 강제 이동 타이머 (영상 로딩이 안 되거나 멈췄을 때 대비)
+                // 영상 길이에 맞춰 조절하세요 (예: 5초)
                 setTimeout(() => {
-                    if (!video.ended) {
+                    if (!isTransitioning) {
+                        console.log("타이머에 의한 강제 이동");
                         goToMain();
                     }
-                }, 4500);
+                }, 5000);
 
+                // 4. 사용자 상호작용 시 소리 켜기 및 재생
                 const handleInteraction = () => {
+                    video.muted = false;
+                    bgm.muted = false;
+                    initialPlay();
                     document.body.removeEventListener('click', handleInteraction);
                     document.body.removeEventListener('touchend', handleInteraction);
-                    initialPlay();
                 };
 
                 document.body.addEventListener('click', handleInteraction, { once: true });
                 document.body.addEventListener('touchend', handleInteraction, { once: true });
 
+                // 초기 실행 시도
                 initialPlay();
             });
         </script>
