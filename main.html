@@ -18,92 +18,87 @@
         <meta property="og:description" content="저희의 소중한 시작을 담은 모바일 청첩장이 6월에 공개됩니다." />
         <!-- <meta property="og:image" content="https://hycho039.github.io/wd_251221/photo/main_tt.jpg" /> -->
     </head>
-            <style>
-            @font-face {
-                font-family: 'SchoolSafetyFoundation';
-                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimBareonbatangR.woff2') format('woff2');
-            }
+    <style>
+        @font-face {
+            font-family: 'SchoolSafetyFoundation';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimBareonbatangR.woff2') format('woff2');
+        }
 
-            body, html {
-                margin: 0;
-                padding: 0;
-                height: 100%;
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background-color: #FDFDFD;
-                font-family: 'SchoolSafetyFoundation', sans-serif;
-                color: #333;
-                text-align: center;
-            }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #FDFDFD;
+            font-family: 'SchoolSafetyFoundation', sans-serif;
+            color: #333;
+            text-align: center;
+        }
 
-            /* 1번 코드의 BGM 컨트롤 버튼 스타일 그대로 반영 */
-            #bgm-control-container {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 1000;
-            }
+        /* BGM 컨트롤 버튼 스타일 */
+/*        #bgm-control-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
 
-            #bgm-toggle-btn {
-                background: rgba(255, 255, 255, 0.8);
-                border: 1px solid #0067A3;
-                color: #0067A3;
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 18px;
-                transition: all 0.3s ease;
-            }
-            
-            @keyframes rotate_bgm {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
+        #bgm-toggle-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #0067A3;
+            color: #0067A3;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
 
-            #bgm-toggle-btn.muted {
-                color: #999;
-                border-color: #999;
-            }
+        #bgm-toggle-btn.muted {
+            color: #999;
+            border-color: #999;
+        }
+*/
+        .notice-container {
+            padding: 20px;
+        }
 
-            .notice-container {
-                padding: 20px;
-            }
+        .flower-icon {
+            width: 60px;
+            margin-bottom: 25px;
+        }
 
-            .flower-icon {
-                width: 60px;
-                margin-bottom: 25px;
-            }
+        .title {
+            color: #0067A3; 
+            font-family: 'Pinyon Script', cursive;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
 
-            .title {
-                color: #0067A3; 
-                font-family: 'Pinyon Script', cursive;
-                font-size: 2.5em;
-                margin-bottom: 10px;
-            }
+        .message {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #555;
+        }
 
-            .message {
-                font-size: 1.1em;
-                line-height: 1.8;
-                color: #555;
-            }
+        .date-highlight {
+            font-weight: bold;
+            color: #0067A3;
+        }
 
-            .date-highlight {
-                font-weight: bold;
-                color: #0067A3;
-            }
-
-            .footer {
-                margin-top: 30px;
-                font-size: 0.9em;
-                color: #999;
-            }
-        </style>
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #999;
+        }
+    </style>
 
 
     <body>
