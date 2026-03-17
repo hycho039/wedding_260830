@@ -5,10 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>결혼합니다</title>
 
-        <meta property="og:title" content="유동진 ❤️ 조혜인: 결혼합니다" />
+        <meta property="og:title" content="유동진 🩵 조혜인: 결혼합니다" />
         <meta property="og:description" content="저희의 소중한 시작을 담은 모바일 청첩장이 6월에 공개됩니다." />
         <meta property="og:url" content="https://hycho039.github.io/wedding_260830/" />
-        
+        <title>결혼합니다</title>
         <style>
             /* 폰트 설정 */
             @font-face {
@@ -30,16 +30,11 @@
 
             /* 비디오 컨테이너 */
             .video-container { 
-                position: fixed;
-                top: 0;
-                left: 0;
                 width: 100vw; 
                 height: 100vh; 
                 display: flex; 
                 justify-content: center; 
                 align-items: center; 
-                z-index: 1;
-                background-color: #000;
                 transition: opacity 0.5s ease-out;
             }
 
@@ -49,52 +44,8 @@
                 object-fit: cover; 
             }
 
-            /* 안내 문구 컨테이너 (영상 위에 띄우거나 영상 뒤에 배치 가능) */
-            .notice-container {
-                position: relative;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding: 20px;
-                box-sizing: border-box;
-                z-index: 2; /* 영상보다 위에 오게 하려면 높게, 영상이 끝난 후 보이게 하려면 로직 필요 */
-                background-color: #FDFDFD;
-            }
-
-            .flower-icon {
-                width: 60px;
-                margin-bottom: 25px;
-            }
-
-            .title {
-                color: #0067A3; 
-                font-family: 'Pinyon Script', cursive;
-                font-size: 2.5em;
-                margin-bottom: 10px;
-            }
-
-            .message {
-                font-size: 1.1em;
-                line-height: 1.8;
-                color: #555;
-            }
-
-            .date-highlight {
-                font-weight: bold;
-                color: #0067A3;
-            }
-
-            .footer {
-                margin-top: 30px;
-                font-size: 0.9em;
-                color: #999;
-            }
-
             .fade-out {
                 opacity: 0;
-                pointer-events: none;
             }
         </style>
     </head>
@@ -104,17 +55,6 @@
                 <source src="./photo/intro.mp4" type="video/mp4">
                 죄송합니다. 귀하의 브라우저는 비디오 태그를 지원하지 않습니다.
             </video>
-        </div>
-
-        <div class="notice-container">
-            <img src="./icon/flower.png" alt="꽃" class="flower-icon">
-            <div class="title">Coming Soon</div>
-            <p class="message">
-                저희 두 사람의 소중한 시작을 담은<br>
-                모바일 청첩장이 <span class="date-highlight">2026년 6월</span>에<br>
-                정식 오픈될 예정입니다.
-            </p>
-            <p class="footer">조금만 기다려주세요. 감사합니다.</p>
         </div>
 
         <audio id="introBgm" loop preload="auto" muted>
@@ -127,8 +67,7 @@
                 const bgm = document.getElementById('introBgm');
                 const introContainer = document.getElementById('introContainer'); 
                 
-                // 1. 경로를 현재 GitHub 레포지토리 구조에 맞춰 명확히 설정합니다.
-                const targetUrl = './main.html?playBgm=true';
+                const targetUrl = 'main.html?playBgm=true';
                 
                 let isTransitioning = false;
 
@@ -136,55 +75,51 @@
                     if (isTransitioning) return;
                     isTransitioning = true;
 
-                    console.log("이동을 시작합니다."); // 디버깅용
+                    // 1. Fade-out 클래스 추가
                     introContainer.classList.add('fade-out');
                     
+                    // 2. 트랜지션 시간(0.5초) 후 페이지 이동 실행
                     setTimeout(() => {
+                        // BGM 재생 상태를 유지하기 위해 메인 페이지로 이동
                         window.location.href = targetUrl;
-                    }, 500); 
+                    }, 500); // CSS transition 시간과 동일하게 0.5초 설정
                 };
-
-                // 2. 비디오 재생 시도 함수
+                // 1. BGM과 Video 자동 재생 시도 (음소거 상태)
                 const initialPlay = () => {
-                    // 브라우저 정책 대응: 음소거 상태로 시작
-                    video.muted = true; 
-                    bgm.muted = true;
-
-                    video.play().then(() => {
-                        console.log("비디오 재생 성공");
-                        // 영상이 정상적으로 재생되면, 영상이 끝날 때 이동하도록 설정
-                        video.addEventListener('ended', goToMain);
-                    }).catch(error => {
-                        console.log("자동 재생 차단됨: 클릭 대기 혹은 즉시 이동");
-                        // 만약 영상 재생 자체가 안 되면 3초 후 강제 이동 기능을 활성화합니다.
-                    });
+                    const videoPromise = video.play();
+                    const bgmPromise = bgm.play();
                     
-                    bgm.play().catch(e => console.log("BGM 대기 중"));
+                    Promise.all([videoPromise, bgmPromise])
+                        .then(() => {
+                            console.log("Video and BGM started successfully (muted).");
+                        })
+                        .catch(error => {
+                            // 자동 재생 실패 시 (대부분 BGM 때문에 발생), 바로 페이드 아웃 후 메인으로 이동
+                            console.error("Auto play failed:", error);
+                            goToMain();
+                        });
                 };
 
-                // 3. 강제 이동 타이머 (영상 로딩이 안 되거나 멈췄을 때 대비)
-                // 영상 길이에 맞춰 조절하세요 (예: 5초)
-                setTimeout(() => {
-                    if (!isTransitioning) {
-                        console.log("타이머에 의한 강제 이동");
-                        goToMain();
-                    }
-                }, 5000);
+                // 2. 비디오 재생 완료 이벤트: 영상이 끝나면 goToMain 실행
+                video.addEventListener('ended', goToMain);
 
-                // 4. 사용자 상호작용 시 소리 켜기 및 재생
+                setTimeout(() => {
+                    if (!video.ended) {
+                        window.location.href = 'main.html?playBgm=true';
+                    }
+                }, 4500); // 4초 영상에 0.5초 여유를 두어 강제 이동
+
                 const handleInteraction = () => {
-                    video.muted = false;
-                    bgm.muted = false;
-                    initialPlay();
                     document.body.removeEventListener('click', handleInteraction);
                     document.body.removeEventListener('touchend', handleInteraction);
+                    initialPlay();
                 };
-
                 document.body.addEventListener('click', handleInteraction, { once: true });
                 document.body.addEventListener('touchend', handleInteraction, { once: true });
 
-                // 초기 실행 시도
+                // 5. 초기 실행
                 initialPlay();
+                
             });
         </script>
     </body>
