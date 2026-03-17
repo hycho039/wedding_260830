@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>결혼합니다</title>
+
+        <meta property="og:title" content="유동진 ❤️ 조혜인: 결혼합니다" />
+        <meta property="og:description" content="저희의 소중한 시작을 담은 모바일 청첩장이 6월에 공개됩니다." />
+        <meta property="og:url" content="https://hycho039.github.io/wedding_260830/" />
+        
+        <style>
+            /* 폰트 설정 */
+            @font-face {
+                font-family: 'SchoolSafetyFoundation';
+                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimBareonbatangR.woff2') format('woff2');
+            }
+            @import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');
+
+            body, html { 
+                margin: 0; 
+                padding: 0; 
+                overflow: hidden; 
+                background-color: #FDFDFD; 
+                height: 100%;
+                width: 100%;
+                font-family: 'SchoolSafetyFoundation', sans-serif;
+                text-align: center;
+            }
+
+            /* 비디오 컨테이너 */
+            .video-container { 
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw; 
+                height: 100vh; 
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                z-index: 1;
+                background-color: #000;
+                transition: opacity 0.5s ease-out;
+            }
+
+            #introVideo { 
+                width: 100%; 
+                height: 100%; 
+                object-fit: cover; 
+            }
+
+            /* 안내 문구 컨테이너 (영상 위에 띄우거나 영상 뒤에 배치 가능) */
+            .notice-container {
+                position: relative;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                box-sizing: border-box;
+                z-index: 2; /* 영상보다 위에 오게 하려면 높게, 영상이 끝난 후 보이게 하려면 로직 필요 */
+                background-color: #FDFDFD;
+            }
+
+            .flower-icon {
+                width: 60px;
+                margin-bottom: 25px;
+            }
+
+            .title {
+                color: #0067A3; 
+                font-family: 'Pinyon Script', cursive;
+                font-size: 2.5em;
+                margin-bottom: 10px;
+            }
+
+            .message {
+                font-size: 1.1em;
+                line-height: 1.8;
+                color: #555;
+            }
+
+            .date-highlight {
+                font-weight: bold;
+                color: #0067A3;
+            }
+
+            .footer {
+                margin-top: 30px;
+                font-size: 0.9em;
+                color: #999;
+            }
+
+            .fade-out {
+                opacity: 0;
+                pointer-events: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="introContainer" class="video-container">
+            <video id="introVideo" preload="auto" playsinline muted>
+                <source src="./photo/intro.mp4" type="video/mp4">
+                죄송합니다. 귀하의 브라우저는 비디오 태그를 지원하지 않습니다.
+            </video>
+        </div>
+
+        <div class="notice-container">
+            <img src="./icon/flower.png" alt="꽃" class="flower-icon">
+            <div class="title">Coming Soon</div>
+            <p class="message">
+                저희 두 사람의 소중한 시작을 담은<br>
+                모바일 청첩장이 <span class="date-highlight">2026년 6월</span>에<br>
+                정식 오픈될 예정입니다.
+            </p>
+            <p class="footer">조금만 기다려주세요. 감사합니다.</p>
+        </div>
+
+        <audio id="introBgm" loop preload="auto" muted>
+            <source src="./bgm.mp3" type="audio/mp3">
+        </audio>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const video = document.getElementById('introVideo');
+                const bgm = document.getElementById('introBgm');
+                const introContainer = document.getElementById('introContainer'); 
+                const targetUrl = 'main.html?playBgm=true';
+                
+                let isTransitioning = false;
+
+                const goToMain = () => {
+                    if (isTransitioning) return;
+                    isTransitioning = true;
+
+                    // 1. 영상 레이어 페이드 아웃
+                    introContainer.classList.add('fade-out');
+                    
+                    // 2. 0.5초 대기 후 페이지 이동 (안내 문구를 잠시 보여주고 싶다면 시간을 늘리세요)
+                    setTimeout(() => {
+                        window.location.href = targetUrl;
+                    }, 500); 
+                };
+
+                const initialPlay = () => {
+                    const videoPromise = video.play();
+                    const bgmPromise = bgm.play();
+                    
+                    Promise.all([videoPromise, bgmPromise])
+                        .then(() => {
+                            console.log("Video and BGM started successfully.");
+                        })
+                        .catch(error => {
+                            console.error("Auto play failed:", error);
+                            // 자동 재생 실패 시에도 영상 레이어는 유지, 클릭 대기
+                        });
+                };
+
+                video.addEventListener('ended', goToMain);
+
+                // 영상이 너무 길거나 멈출 경우를 대비한 강제 이동 (4.5초)
+                setTimeout(() => {
+                    if (!video.ended) {
+                        goToMain();
+                    }
+                }, 4500);
+
+                const handleInteraction = () => {
+                    document.body.removeEventListener('click', handleInteraction);
+                    document.body.removeEventListener('touchend', handleInteraction);
+                    initialPlay();
+                };
+
+                document.body.addEventListener('click', handleInteraction, { once: true });
+                document.body.addEventListener('touchend', handleInteraction, { once: true });
+
+                initialPlay();
+            });
+        </script>
+    </body>
+</html>
