@@ -30,7 +30,7 @@
                 text-align: center;
             }
 
-            /* BGM 컨트롤 버튼 스타일 */
+            /* 1번 코드의 BGM 컨트롤 버튼 스타일 반영 */
             #bgm-control-container {
                 position: fixed;
                 top: 20px;
@@ -51,6 +51,16 @@
                 justify-content: center;
                 font-size: 18px;
                 transition: all 0.3s ease;
+            }
+
+            /* 재생 중일 때의 애니메이션 (1번 코드 스타일) */
+            .bgm-playing i {
+                animation: rotate_bgm 3s linear infinite;
+            }
+
+            @keyframes rotate_bgm {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
             }
 
             #bgm-toggle-btn.muted {
@@ -94,28 +104,17 @@
     </head>
 
     <body>
-        <audio id="bgm" loop preload="auto">
-            <source src="./bgm.mp3" type="audio/mp3">
-        </audio>
+        <div class="container initial-hidden" style="display:none;">
+            <audio id="bgm" loop preload="auto" muted>
+                <source src="./bgm.mp3" type="audio/mp3">
+            </audio>
+        </div>
         
         <div id="bgm-control-container">
-            <button id="bgm-toggle-btn">
+            <button id="bgm-toggle-btn" class="bgm-playing">
                 <i class="fas fa-volume-up"></i>
             </button>
         </div>
-
-        <!-- <div class = "container">
-            <div class = "container initial-hidden">
-                <audio id="bgm" loop preload="auto" muted>
-                    <source src="./bgm.mp3" type="audio/mp3">
-                </audio>
-            </div>
-            
-            <div id="bgm-control-container">
-                <button id="bgm-toggle-btn" class="bgm-playing">
-                <i class="fas fa-volume-up"></i>
-                </button>
-         -->    </div>
 
         <div class="notice-container">
             <img src="./icon/flower.png" alt="꽃" class="flower-icon">
@@ -129,43 +128,49 @@
         </div>
 
         <script>
+            // 1번 코드의 로직을 그대로 구현
             const bgm = document.getElementById('bgm');
             const bgmBtn = document.getElementById('bgm-toggle-btn');
             const bgmIcon = bgmBtn.querySelector('i');
 
-            // BGM 재생/일시정지 토글 함수
             function toggleBgm() {
                 if (bgm.paused) {
+                    bgm.muted = false;
                     bgm.play();
+                    bgmBtn.classList.add('bgm-playing');
                     bgmBtn.classList.remove('muted');
                     bgmIcon.className = 'fas fa-volume-up';
                 } else {
                     bgm.pause();
+                    bgmBtn.classList.remove('bgm-playing');
                     bgmBtn.classList.add('muted');
                     bgmIcon.className = 'fas fa-volume-mute';
                 }
             }
 
-            bgmBtn.addEventListener('click', toggleBgm);
+            bgmBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleBgm();
+            });
 
-            // 브라우저 정책 대응: 첫 터치 시 재생 시도
-            function startBgmOnInteraction() {
+            // 인트로에서 넘어오는 playBgm=true 파라미터 체크 및 터치 시 재생
+            function handleFirstInteraction() {
+                bgm.muted = false;
                 bgm.play().then(() => {
-                    // 재생 성공 시 이벤트 리스너 제거
-                    document.removeEventListener('click', startBgmOnInteraction);
-                    document.removeEventListener('touchstart', startBgmOnInteraction);
-                }).catch(error => {
-                    console.log("자동 재생 대기 중...");
-                });
+                    bgmBtn.classList.add('bgm-playing');
+                }).catch(e => console.log("자동 재생 대기 중"));
+                
+                document.removeEventListener('click', handleFirstInteraction);
+                document.removeEventListener('touchstart', handleInteraction);
             }
 
-            document.addEventListener('click', startBgmOnInteraction);
-            document.addEventListener('touchstart', startBgmOnInteraction);
+            document.addEventListener('click', handleFirstInteraction);
+            document.addEventListener('touchstart', handleFirstInteraction);
 
-            // URL 파라미터에 playBgm=true가 있을 경우 자동 실행 (기존 로직 유지)
+            // 1번 코드의 URL 파라미터 로직
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('playBgm') === 'true') {
-                startBgmOnInteraction();
+                // 브라우저 정책상 클릭이 필요하므로 handleFirstInteraction이 동작함
             }
         </script>
     </body>
