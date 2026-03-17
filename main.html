@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>결혼합니다 </title>
+        <title>결혼합니다</title>
         <script src="./script_main.js?v=202510210" defer></script>
         <link rel="stylesheet" href="style.css?v=202510223">
         <link rel="stylesheet" href="./animate.css">
@@ -16,106 +16,80 @@
 
         <meta property="og:title" content="유동진 🩵 조혜인: 결혼합니다" />
         <meta property="og:description" content="저희의 소중한 시작을 담은 모바일 청첩장이 6월에 공개됩니다." />
-        <!-- <meta property="og:image" content="https://hycho039.github.io/wd_251221/photo/main_tt.jpg" /> -->
+        
+        <style>
+            @font-face {
+                font-family: 'SchoolSafetyFoundation';
+                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimBareonbatangR.woff2') format('woff2');
+            }
+
+            body, html {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #FDFDFD;
+                font-family: 'SchoolSafetyFoundation', sans-serif;
+                color: #333;
+                text-align: center;
+            }
+
+            /* BGM 컨트롤 버튼 스타일 */
+            #bgm-control-container {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1000;
+            }
+
+            #bgm-toggle-btn {
+                background: rgba(255, 255, 255, 0.8);
+                border: 1px solid #0067A3;
+                color: #0067A3;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                transition: all 0.3s ease;
+            }
+
+            #bgm-toggle-btn.muted {
+                color: #999;
+                border-color: #999;
+            }
+
+            .notice-container { padding: 20px; }
+            .flower-icon { width: 60px; margin-bottom: 25px; }
+            .title {
+                color: #0067A3; 
+                font-family: 'Pinyon Script', cursive;
+                font-size: 2.5em;
+                margin-bottom: 10px;
+            }
+            .message { font-size: 1.1em; line-height: 1.8; color: #555; }
+            .date-highlight { font-weight: bold; color: #0067A3; }
+            .footer { margin-top: 30px; font-size: 0.9em; color: #999; }
+        </style>
     </head>
-    <style>
-        @font-face {
-            font-family: 'SchoolSafetyFoundation';
-            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimBareonbatangR.woff2') format('woff2');
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #FDFDFD;
-            font-family: 'SchoolSafetyFoundation', sans-serif;
-            color: #333;
-            text-align: center;
-        }
-
-        /* BGM 컨트롤 버튼 스타일 */
-/*        #bgm-control-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-*/
-        #bgm-toggle-btn {
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid #0067A3;
-            color: #0067A3;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            transition: all 0.3s ease;
-        }
-
-        #bgm-toggle-btn.muted {
-            color: #999;
-            border-color: #999;
-        }
-
-        .notice-container {
-            padding: 20px;
-        }
-
-        .flower-icon {
-            width: 60px;
-            margin-bottom: 25px;
-        }
-
-        .title {
-            color: #0067A3; 
-            font-family: 'Pinyon Script', cursive;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .message {
-            font-size: 1.1em;
-            line-height: 1.8;
-            color: #555;
-        }
-
-        .date-highlight {
-            font-weight: bold;
-            color: #0067A3;
-        }
-
-        .footer {
-            margin-top: 30px;
-            font-size: 0.9em;
-            color: #999;
-        }
-    </style>
-
 
     <body>
-        <div class = "container">
-            <div class = "container initial-hidden">
-                <audio id="bgm" loop preload="auto" muted>
-                    <source src="./bgm.mp3" type="audio/mp3">
-                </audio>
-            </div>
+        <div class="container">
+            <audio id="bgm" loop preload="auto" muted>
+                <source src="./bgm.mp3" type="audio/mp3">
+            </audio>
             
             <div id="bgm-control-container">
-                <button id="bgm-toggle-btn" class="bgm-playing">
-                <i class="fas fa-volume-up"></i>
+                <button id="bgm-toggle-btn" class="muted">
+                    <i id="bgm-icon" class="fas fa-volume-mute"></i>
                 </button>
             </div>
-
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
             <div class="notice-container">
                 <img src="./icon/flower.png" alt="꽃" class="flower-icon">
@@ -128,7 +102,54 @@
                 <p class="footer">조금만 기다려주세요. 감사합니다.</p>
             </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const bgm = document.getElementById('bgm');
+                const btn = document.getElementById('bgm-toggle-btn');
+                const icon = document.getElementById('bgm-icon');
+
+                // 1. URL 파라미터 확인 (?playBgm=true)
+                const urlParams = new URLSearchParams(window.location.search);
+                const shouldPlay = urlParams.get('playBgm');
+
+                const updateUI = (isPlaying) => {
+                    if (isPlaying) {
+                        btn.classList.remove('muted');
+                        icon.classList.replace('fa-volume-mute', 'fa-volume-up');
+                    } else {
+                        btn.classList.add('muted');
+                        icon.classList.replace('fa-volume-up', 'fa-volume-mute');
+                    }
+                };
+
+                const playBgm = () => {
+                    bgm.muted = false;
+                    bgm.play()
+                        .then(() => {
+                            updateUI(true);
+                        })
+                        .catch(err => {
+                            console.log("자동 재생 차단됨:", err);
+                            updateUI(false);
+                        });
+                };
+
+                // 2. 인트로에서 넘어왔을 경우 자동 재생 시도
+                if (shouldPlay === 'true') {
+                    playBgm();
+                }
+
+                // 3. 수동 토글 버튼 기능
+                btn.addEventListener('click', function() {
+                    if (bgm.paused || bgm.muted) {
+                        playBgm();
+                    } else {
+                        bgm.pause();
+                        updateUI(false);
+                    }
+                });
+            });
+        </script>
     </body>
 </html>
-
-
