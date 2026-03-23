@@ -94,6 +94,7 @@
             <div class="notice-container">
                 <img src="./icon/flower.png" alt="꽃" class="flower-icon">
                 <div class="title">Coming Soon</div>
+                <div id="d-day-counter" class="d-day">D-Day 계산 중...</div>
                 <p class="message">
                     저희 두 사람의 소중한 시작을 담은<br>
                     모바일 청첩장이 <span class="date-highlight">2026년 6월</span>에<br>
@@ -104,6 +105,28 @@
         </div>
 
         <script>
+            function initDday() {
+                const targetDate = new Date("2026-08-30T00:00:00"); 
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); 
+                
+                const difference = targetDate.getTime() - today.getTime();
+                const dDay = Math.ceil(difference / (1000 * 60 * 60 * 24));
+                const dDayElement = document.getElementById('d-day-counter');
+
+                if (dDayElement) {
+                    if (dDay > 0) {
+                        dDayElement.innerText = `D - ${dDay}`;
+                    } else if (dDay === 0) {
+                        dDayElement.innerText = `D - Day`;
+                    } else {
+                        dDayElement.innerText = `D + ${Math.abs(dDay)}`;
+                    }
+                }
+            }
+
+            // HTML이 로드되면 즉시 디데이부터 띄움
+            initDday();
             document.addEventListener('DOMContentLoaded', function() {
                 const bgm = document.getElementById('bgm');
                 const btn = document.getElementById('bgm-toggle-btn');
