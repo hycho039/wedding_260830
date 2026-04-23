@@ -1,126 +1,616 @@
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>결혼합니다</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
 
-        <meta property="og:title" content="유동진 🩵 조혜인: 결혼합니다" />
-        <meta property="og:description" content="저희의 소중한 시작을 담은 모바일 청첩장이 6월에 공개됩니다." />
-        <meta property="og:url" content="https://hycho039.github.io/wedding_260830/" />
-        <title>결혼합니다</title>
-        <style>
-            /* 폰트 설정 */
-            @font-face {
-                font-family: 'SchoolSafetyFoundation';
-                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimBareonbatangR.woff2') format('woff2');
-            }
-            @import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');
+  <!-- Meta / OG tags - config.js 값으로 script에서 동적 설정 -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="">
+  <meta property="og:description" content="">
+  <meta property="og:image" content="">
+  <meta name="description" content="">
 
-            body, html { 
-                margin: 0; 
-                padding: 0; 
-                overflow: hidden; 
-                background-color: #FDFDFD; 
-                height: 100%;
-                width: 100%;
-                font-family: 'SchoolSafetyFoundation', sans-serif;
-                text-align: center;
-            }
+  <title>Wedding Invitation</title>
 
-            /* 비디오 컨테이너 */
-            .video-container { 
-                width: 100vw; 
-                height: 100vh; 
-                display: flex; 
-                justify-content: center; 
-                align-items: center; 
-                transition: opacity 0.5s ease-out;
-            }
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-            #introVideo { 
-                width: 100%; 
-                height: 100%; 
-                object-fit: cover; 
-            }
+  <link rel="stylesheet" href="styles.css">
+  <!-- kakaotalk sharing --> 
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.6.0/kakao.min.js" integrity="sha384-6MFdIr0zOira1CHQkedUqJVql0YtcZA1P0nbPrQYJXVJZUkTk/oX4U9Gk03Srv0I" crossorigin="anonymous"></script>
+  <script src="config.js"></script>
+</head>
+<body>
 
-            .fade-out {
-                opacity: 0;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="introContainer" class="video-container">
-            <video id="introVideo" preload="auto" playsinline muted>
-                <source src="./photo/intro.mp4" type="video/mp4">
-                죄송합니다. 귀하의 브라우저는 비디오 태그를 지원하지 않습니다.
-            </video>
+  <!-- ═══ Curtain Opening Animation ═══ -->
+  <div id="curtain" class="curtain">
+    <div class="curtain__left"></div>
+    <div class="curtain__right"></div>
+    <div class="curtain__content">
+      <div class="curtain__leaf-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c1.5-3 2-6.5 2-10S13.5 5 12 2z"/><path d="M12 2c3 1.5 5 5 5 10s-2 8.5-5 10"/><path d="M2 12h20"/></svg>
+      </div>
+      <p class="curtain__subtitle">Wedding Invitation</p>
+      <p class="curtain__names" id="curtainNames"></p>
+      <button class="curtain__btn" id="curtainBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6.5 2 2 6.5 2 12c0 3 2.5 6.5 10 10 7.5-3.5 10-7 10-10 0-5.5-4.5-10-10-10z"/><path d="M12 2v20"/></svg>
+        초대장 열기
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ Falling Leaves ═══ -->
+  <canvas id="leafCanvas" class="leaf-canvas"></canvas>
+
+  <!-- ═══ Toast Notification ═══ -->
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <!-- ═══ Photo Viewer Modal ═══ -->
+  <div id="photoModal" class="photo-modal" role="dialog" aria-modal="true" aria-label="사진 보기">
+    <button class="photo-modal__close" id="modalClose" aria-label="닫기">&times;</button>
+    <button class="photo-modal__nav photo-modal__nav--prev" id="modalPrev" aria-label="이전 사진">&#8249;</button>
+    <button class="photo-modal__nav photo-modal__nav--next" id="modalNext" aria-label="다음 사진">&#8250;</button>
+    <div class="photo-modal__container" id="modalContainer">
+      <img class="photo-modal__img" id="modalImg" src="" alt="사진" draggable="false">
+    </div>
+    <div class="photo-modal__counter" id="modalCounter"></div>
+  </div>
+
+  <!-- ═══ Main Content ═══ -->
+  <main id="mainContent" class="main-content">
+
+    <!-- ─── Hero Section ─── -->
+    <section class="section hero" id="hero">
+      <div class="hero__overlay"></div>
+      <img class="hero__photo" id="heroPhoto" src="" alt="웨딩 사진" loading="eager">
+      <div class="hero__content">
+        <p class="hero__label animate-item" data-animate="fade-down">Wedding Invitation</p>
+        <h1 class="hero__names animate-item" data-animate="fade-up" id="heroNames"></h1>
+        <div class="hero__divider animate-item" data-animate="fade-in">
+          <svg width="60" height="20" viewBox="0 0 60 20" fill="none">
+            <path d="M5 10 Q15 2 30 10 Q45 18 55 10" stroke="rgba(255,255,255,0.5)" stroke-width="1" fill="none"/>
+            <path d="M25 8 C28 3 32 3 35 8 C32 6 28 6 25 8z" fill="rgba(255,255,255,0.4)"/>
+          </svg>
+        </div>
+        <p class="hero__date animate-item" data-animate="fade-up" id="heroDate"></p>
+        <p class="hero__venue animate-item" data-animate="fade-up" id="heroVenue"></p>
+        <p class="hero__hall animate-item" data-animate="fade-up" id="heroHall"></p>
+      </div>
+
+    </section>
+
+    <section class="section weddingdate" id="weddingdate">
+      <!-- Countdown -->
+      <div class="countdown animate-item" data-animate="fade-up" id="countdown">
+        <p class="countdown__label" id="countdownLabel"></p>
+        <div class="countdown__timer">
+          <div class="countdown__item">
+            <span class="countdown__number" id="countDays">0</span>
+            <span class="countdown__unit">일</span>
+          </div>
+          <div class="countdown__sep">:</div>
+          <div class="countdown__item">
+            <span class="countdown__number" id="countHours">0</span>
+            <span class="countdown__unit">시간</span>
+          </div>
+          <div class="countdown__sep">:</div>
+          <div class="countdown__item">
+            <span class="countdown__number" id="countMinutes">0</span>
+            <span class="countdown__unit">분</span>
+          </div>
+          <div class="countdown__sep">:</div>
+          <div class="countdown__item">
+            <span class="countdown__number" id="countSeconds">0</span>
+            <span class="countdown__unit">초</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="calendar-inline animate-item" data-animate="scale-in">
+        <div class="calendar" id="calendarGrid"></div>
+          <div class="calendar-actions">
+            <a class="btn btn--outline" id="googleCalBtn" href="#" target="_blank" rel="noopener">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+              Google 캘린더
+            </a>
+            <button class="btn btn--outline" id="icsDownloadBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16l2 2 2-2"/></svg>
+              Apple 캘린더
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Leaf Divider ─── -->
+    <div class="leaf-divider" aria-hidden="true">
+      <svg viewBox="0 0 200 30" preserveAspectRatio="none">
+        <path d="M80 15 Q90 5 100 15 Q110 25 120 15" stroke="var(--color-sage)" stroke-width="1" fill="none" opacity="0.5"/>
+        <path d="M92 12 C96 6 104 6 108 12 C104 9 96 9 92 12z" fill="var(--color-sage)" opacity="0.3"/>
+      </svg>
+    </div>
+
+    <!-- ─── Greeting Section ─── -->
+    <section class="section greeting" id="greeting">
+      <div class="section__inner">
+        <div class="botanical-ornament animate-item" data-animate="fade-in" aria-hidden="true">
+          <svg width="40" height="50" viewBox="0 0 40 50" fill="none">
+            <path d="M20 48 L20 20" stroke="var(--color-sage)" stroke-width="1"/>
+            <path d="M20 35 C12 30 8 22 12 15 C16 8 20 12 20 20" stroke="var(--color-sage)" stroke-width="1" fill="var(--color-sage)" fill-opacity="0.15"/>
+            <path d="M20 30 C28 25 32 17 28 10 C24 3 20 7 20 15" stroke="var(--color-sage)" stroke-width="1" fill="var(--color-sage)" fill-opacity="0.15"/>
+            <path d="M20 25 C14 22 11 16 14 11 C17 6 20 9 20 14" stroke="var(--color-forest)" stroke-width="0.8" fill="var(--color-forest)" fill-opacity="0.1"/>
+          </svg>
+        </div>
+        <h2 class="section__title animate-item" data-animate="fade-up" id="greetingTitle"></h2>
+        <p class="greeting__text animate-item" data-animate="fade-up" id="greetingContent"></p>
+        <div class="greeting__parents animate-item" data-animate="fade-up" id="greetingParents"></div>
+      </div>
+    </section>
+
+    <!-- 연락하기 파트 시작 -->
+    <section class="section contact" id="contact">
+      <div class="section__inner">
+        <h2 class="section__title animate-item" data-animate="fade-up">연락하기</h2>
+        
+        <div class="accordion animate-item" data-animate="fade-up" style="margin-top: 1.5rem;">
+          <button class="accordion__trigger" id="contactGroomAccordion" aria-expanded="false">
+            <span class="accordion__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+            </span>
+            <span>신랑측 연락하기</span>
+            <svg class="accordion__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          
+          <div class="accordion__panel" id="contactGroomAccordionPanel">
+            <div class="accordion__panel-inner" style="padding-top: 10px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px dashed var(--color-divider);">
+                <span style="width: 70px; color: var(--color-text-light); font-size: 0.95rem;">신랑</span>
+                <span id="groom-name-pop" style="flex: 1; font-weight: 500; font-size: 1.05rem;"></span>
+                <span style="display: flex; gap: 12px;">
+                  <a id="groom-call-pop" href="" aria-label="전화하기" style="color: var(--color-text-light);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></a>
+                  <a id="groom-sms-pop" href="" aria-label="문자하기" style="color: var(--color-text-light);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+                </span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px dashed var(--color-divider);">
+                <span style="width: 70px; color: var(--color-text-light); font-size: 0.95rem;">아버지</span>
+                <span id="groom-father-name-pop" style="flex: 1; font-weight: 500; font-size: 1.05rem;"></span>
+                <span style="display: flex; gap: 12px;">
+                  <a id="groom-father-call-pop" href="" aria-label="전화하기" style="color: var(--color-text-light);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></a>
+                  <a id="groom-father-sms-pop" href="" aria-label="문자하기" style="color: var(--color-text-light);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+                </span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0;">
+                <span style="width: 70px; color: var(--color-text-light); font-size: 0.95rem;">어머니</span>
+                <span id="groom-mother-name-pop" style="flex: 1; font-weight: 500; font-size: 1.05rem;"></span>
+                <span style="display: flex; gap: 12px;">
+                  <a id="groom-mother-call-pop" href="" aria-label="전화하기" style="color: var(--color-text-light);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></a>
+                  <a id="groom-mother-sms-pop" href="" aria-label="문자하기" style="color: var(--color-text-light);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <audio id="introBgm" loop preload="auto" muted>
-            <source src="./bgm.mp3" type="audio/mp3">
-        </audio>
+        <div class="accordion animate-item" data-animate="fade-up">
+          <button class="accordion__trigger" id="contactBrideAccordion" aria-expanded="false">
+            <span class="accordion__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+            </span>
+            <span>신부측 연락하기</span>
+            <svg class="accordion__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          
+          <div class="accordion__panel" id="contactBrideAccordionPanel">
+            <div class="accordion__panel-inner" style="padding-top: 10px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px dashed var(--color-divider);">
+                <span style="width: 70px; color: var(--color-text-light); font-size: 0.95rem;">신부</span>
+                <span id="bride-name-pop" style="flex: 1; font-weight: 500; font-size: 1.05rem;"></span>
+                <span style="display: flex; gap: 12px;">
+                  <a id="bride-call-pop" href="" aria-label="전화하기" style="color: var(--color-text-light);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></a>
+                  <a id="bride-sms-pop" href="" aria-label="문자하기" style="color: var(--color-text-light);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+                </span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px dashed var(--color-divider);">
+                <span style="width: 70px; color: var(--color-text-light); font-size: 0.95rem;">아버지</span>
+                <span id="bride-father-name-pop" style="flex: 1; font-weight: 500; font-size: 1.05rem;"></span>
+                <span style="display: flex; gap: 12px;">
+                  <a id="bride-father-call-pop" href="" aria-label="전화하기" style="color: var(--color-text-light);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></a>
+                  <a id="bride-father-sms-pop" href="" aria-label="문자하기" style="color: var(--color-text-light);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+                </span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0;">
+                <span style="width: 70px; color: var(--color-text-light); font-size: 0.95rem;">어머니</span>
+                <span id="bride-mother-name-pop" style="flex: 1; font-weight: 500; font-size: 1.05rem;"></span>
+                <span style="display: flex; gap: 12px;">
+                  <a id="bride-mother-call-pop" href="" aria-label="전화하기" style="color: var(--color-text-light);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></a>
+                  <a id="bride-mother-sms-pop" href="" aria-label="문자하기" style="color: var(--color-text-light);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </section>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const video = document.getElementById('introVideo');
-                const bgm = document.getElementById('introBgm');
-                const introContainer = document.getElementById('introContainer'); 
+    <!-- 연락하기 파트 끝 -->
+
+    <!-- ─── Story Section ─── -->
+    <section class="section story" id="story">
+      <div class="section__inner">
+        <h2 class="section__title animate-item" data-animate="fade-up" id="storyTitle"></h2>
+        <p class="story__text animate-item" data-animate="fade-up" id="storyContent"></p>
+        <div class="story__photos" id="storyPhotos"></div>
+      </div>
+    </section>
+
+    <!-- About Section --> 
+    <!-- <section class="section about" id="about">
+      <div class="section__inner">
+        <h2 class="section__title animate-item" data-animate="fade-up" style="font-family: 'Pinyon Script', var(--font-serif); font-size: 2.2rem; letter-spacing: 2px;">
+          ABOUT US
+        </h2>
+
+        <div class="about__container animate-item" data-animate="fade-up">
+          
+          <div class="about__card">
+            <div class="about__photo">
+              <img src="./images/about/groom.jpeg" alt="신랑 사진">
+            </div>
+            <div class="about__info">
+              <h3 class="about__name"><span class="role">신랑</span> 유동진</h3>
+              <div class="about__details">
+                <p>1993년 3월</p>
+                <p>붓기미남 🤵🏻‍♂️</p>
+                <p>웃는게 이쁜 귀염둥이 😙</p>
+              </div>
+              <div class="about__qa">
+                <p class="q">Q. ?</p>
+                <p class="a">A. </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="about__card">
+            <div class="about__photo">
+              <img src="./images/about/bride.jpeg" alt="신부 사진">
+            </div>
+            <div class="about__info">
+              <h3 class="about__name"><span class="role">신부</span> 조혜인</h3>
+              <div class="about__details">
+                <p>1993년 5월</p>
+                <p>잠이최고인 잠만보 👰🏻‍♀️</p>
+                <p>가끔발휘되는 똑순이 ✨</p>
+              </div>
+              <div class="about__qa">
+                <p class="q">Q. ?</p>
+                <p class="a">A. </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section> -->
+
+    <!-- ─── Leaf Divider ─── -->
+    <div class="leaf-divider" aria-hidden="true">
+      <svg viewBox="0 0 200 30" preserveAspectRatio="none">
+        <path d="M80 15 Q90 5 100 15 Q110 25 120 15" stroke="var(--color-sage)" stroke-width="1" fill="none" opacity="0.5"/>
+        <path d="M92 12 C96 6 104 6 108 12 C104 9 96 9 92 12z" fill="var(--color-sage)" opacity="0.3"/>
+      </svg>
+    </div>
+
+    <!-- ─── Gallery Section ─── -->
+    <section class="section gallery" id="gallery">
+      <div class="section__inner">
+        <h2 class="section__title animate-item" data-animate="fade-up">갤러리</h2>
+        <p class="section__text animate-item" data-animate="fade-up">갤러리는 7월 중 정식 오픈할 예정입니다.</p>
+        <!-- <div class="gallery__grid" id="galleryGrid"></div> -->
+      </div>
+    </section>
+
+    <!-- ─── Leaf Divider ─── -->
+    <div class="leaf-divider leaf-divider--alt" aria-hidden="true">
+      <svg viewBox="0 0 200 20" preserveAspectRatio="none">
+        <line x1="40" y1="10" x2="85" y2="10" stroke="var(--color-sage)" stroke-width="0.5" opacity="0.4"/>
+        <path d="M90 10 C95 4 105 4 110 10 C105 7 95 7 90 10z" fill="var(--color-sage)" opacity="0.4"/>
+        <line x1="115" y1="10" x2="160" y2="10" stroke="var(--color-sage)" stroke-width="0.5" opacity="0.4"/>
+      </svg>
+    </div>
+
+    <!-- ─── Location Section ─── -->
+    <section class="section location" id="location">
+      <div class="section__inner">
+        <h2 class="section__title animate-item" data-animate="fade-up">오시는 길</h2>
+        <div class="location__info animate-item" data-animate="fade-up">
+          <p class="location__venue" id="locationVenue"></p>
+          <p class="location__hall" id="locationHall"></p>
+          <p class="location__address" id="locationAddress"></p>
+          <p class="location__tel" id="locationTel"></p>
+        </div>
+        <button class="btn btn--text location__copy animate-item" data-animate="fade-up" id="copyAddressBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          주소 복사
+        </button>
+        <div class="location__map animate-item" data-animate="scale-in">
+          <img class="location__map-img" id="locationMapImg" src="" alt="약도" loading="lazy">
+        </div>
+        <div class="location__links animate-item" data-animate="fade-up">
+          <a class="btn btn--kakao" id="kakaoMapBtn" href="#" target="_blank" rel="noopener">카카오맵</a>
+          <a class="btn btn--naver" id="naverMapBtn" href="#" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+        <div style="width: 24px; height: 2px; background: var(--color-border); margin: 0 auto 1.5rem; border-radius: 2px;"></div>
+        <div class="location__transport animate-item" data-animate="fade-up" style="margin-bottom: 2.5rem;">
+          
+          <div style="margin-bottom: 1.5rem; text-align: center;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="1.5"><path d="M6 3h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M8 17l-2 4h12l-2-4"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><path d="M4 8h16"/></svg>
+              <span style="font-family: var(--font-sans); font-size: 0.8rem; font-weight: 500; color: var(--color-text-muted); letter-spacing: 1px;">지하철</span>
+            </div>
+            <div style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 300; color: var(--color-text-light); line-height: 1.6; word-break: keep-all;">
+              <p><strong style="color: #6a8caf; font-weight: 500;">9호선</strong> <span style="color: var(--color-divider); margin: 0 4px;">|</span> 마곡나루역 1, 2번 출구방면 진입통로 연결</p>
+              <p style="margin-top: 0.3rem;"><strong style="color: #6a8caf; font-weight: 500;">공항철도</strong> <span style="color: var(--color-divider); margin: 0 4px;">|</span> 9호선 환승역 방향 마곡나루역 1, 2번 출구 <br> 진입통로 연결</p>
+            </div>
+          </div>
+
+          <div style="width: 24px; height: 2px; background: var(--color-border); margin: 0 auto 1.5rem; border-radius: 2px;"></div>
+
+          <div style="margin-bottom: 1.5rem; text-align: center;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="1.5"><path d="M4 6a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"/><path d="M8 22v-4"/><path d="M16 22v-4"/><circle cx="8" cy="14" r="1.5"/><circle cx="16" cy="14" r="1.5"/><path d="M4 10h16"/></svg>
+              <span style="font-family: var(--font-sans); font-size: 0.8rem; font-weight: 500; color: var(--color-text-muted); letter-spacing: 1px;">버스</span>
+            </div>
+            <div style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 300; color: var(--color-text-light); line-height: 1.6; word-break: keep-all;">
+              <p style="margin-bottom: 0.4rem;">마곡나루역 정류장 하차</p>
+              <p style="font-size: 0.8rem; background: var(--color-bg-warm); padding: 0.6rem 0.8rem; border-radius: 6px; display: inline-block;">
+                <span style="color: #528AAE; font-weight: 500;">간선</span> N64 <span style="color: var(--color-divider); margin: 0 4px;">|</span> 
+                <span style="color: #6a8caf; font-weight: 500;">지선</span> 6642, 6645, 6648 <span style="color: var(--color-divider); margin: 0 4px;">|</span> 
+                <span style="color: #73A5C6; font-weight: 500;">마을</span> 강서05-1, 강서07
+              </p>
+            </div>
+          </div>
+
+          <div style="width: 24px; height: 2px; background: var(--color-border); margin: 0 auto 1.5rem; border-radius: 2px;"></div>
+
+          <div style="margin-bottom: 1.5rem; text-align: center;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="1.5"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M8 22v-2"/><path d="M16 22v-2"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="4" y1="11" x2="20" y2="11"/></svg>
+              <span style="font-family: var(--font-sans); font-size: 0.8rem; font-weight: 500; color: var(--color-text-muted); letter-spacing: 1px;">지방하객 교통안내</span>
+            </div>
+            <div style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 300; color: var(--color-text-light); line-height: 1.6; word-break: keep-all; text-align: left; display: inline-block; width: 100%;">
+              <div style="background: var(--color-bg-warm); padding: 1.2rem; border-radius: 8px; font-size: 0.8rem;">
                 
-                const targetUrl = 'main.html?playBgm=true';
-                
-                let isTransitioning = false;
+                <div style="margin-bottom: 1.2rem;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.3rem;">
+                    <strong style="color: #6a8caf; font-weight: 500; font-size: 0.85rem;">기차 KTX</strong>
+                    <span style="font-size: 0.7rem; color: var(--color-text-muted); background: var(--color-white); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--color-divider);">약 29분 소요</span>
+                  </div>
+                  <strong style="color: var(--color-text); font-weight: 500; display: block; margin-bottom: 0.1rem;">서울역 하차 시</strong>
+                  <span style="color: var(--color-text-light);">공항철도 서울역 승차 → 마곡나루역 하차</span>
+                </div>
 
-                const goToMain = () => {
-                    if (isTransitioning) return;
-                    isTransitioning = true;
+                <div>
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.3rem;">
+                    <strong style="color: #6a8caf; font-weight: 500; font-size: 0.85rem;">고속버스</strong>
+                    <span style="font-size: 0.7rem; color: var(--color-text-muted); background: var(--color-white); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--color-divider);">약 30분 소요</span>
+                  </div>
+                  <strong style="color: var(--color-text); font-weight: 500; display: block; margin-bottom: 0.1rem;">서울고속버스터미널 하차 시</strong>
+                  <span style="color: var(--color-text-light);">9호선 고속터미널역 (급행) 승차 → 마곡나루역 하차</span>
+                </div>
 
-                    // 1. Fade-out 클래스 추가
-                    introContainer.classList.add('fade-out');
-                    
-                    // 2. 트랜지션 시간(0.5초) 후 페이지 이동 실행
-                    setTimeout(() => {
-                        // BGM 재생 상태를 유지하기 위해 메인 페이지로 이동
-                        window.location.href = targetUrl;
-                    }, 500); // CSS transition 시간과 동일하게 0.5초 설정
-                };
-                // 1. BGM과 Video 자동 재생 시도 (음소거 상태)
-                const initialPlay = () => {
-                    const videoPromise = video.play();
-                    const bgmPromise = bgm.play();
-                    
-                    Promise.all([videoPromise, bgmPromise])
-                        .then(() => {
-                            console.log("Video and BGM started successfully (muted).");
-                        })
-                        .catch(error => {
-                            // 자동 재생 실패 시 (대부분 BGM 때문에 발생), 바로 페이드 아웃 후 메인으로 이동
-                            console.error("Auto play failed:", error);
-                            goToMain();
-                        });
-                };
+              </div>
+            </div>
+          </div>
 
-                // 2. 비디오 재생 완료 이벤트: 영상이 끝나면 goToMain 실행
-                video.addEventListener('ended', goToMain);
+          <div style="width: 24px; height: 2px; background: var(--color-border); margin: 0 auto 1.5rem; border-radius: 2px;"></div>
 
-                setTimeout(() => {
-                    if (!video.ended) {
-                        window.location.href = 'main.html?playBgm=true';
-                    }
-                }, 4500); // 4초 영상에 0.5초 여유를 두어 강제 이동
+          <div style="text-align: center;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="1.5"><path d="M5 10l1.5-4.5A2 2 0 018.4 4h7.2a2 2 0 011.9 1.5L19 10"/><path d="M3 10h18v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5z"/><circle cx="7" cy="14" r="1.5"/><circle cx="17" cy="14" r="1.5"/></svg>
+              <span style="font-family: var(--font-sans); font-size: 0.8rem; font-weight: 500; color: var(--color-text-muted); letter-spacing: 1px;">자가용</span>
+            </div>
+            <div style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 300; color: var(--color-text-light); line-height: 1.6; word-break: keep-all; text-align: left; display: inline-block; width: 100%;">
+              
+              <p style="text-align: center; margin-bottom: 1rem;">
+                네비게이션 : <strong style="color: var(--color-forest); font-weight: 500;">보타닉파크웨딩 주차장</strong> 또는 <strong style="color: var(--color-forest); font-weight: 500;">마곡동 760</strong>
+              </p>
 
-                const handleInteraction = () => {
-                    document.body.removeEventListener('click', handleInteraction);
-                    document.body.removeEventListener('touchend', handleInteraction);
-                    initialPlay();
-                };
-                document.body.addEventListener('click', handleInteraction, { once: true });
-                document.body.addEventListener('touchend', handleInteraction, { once: true });
+              <div style="background: var(--color-bg-warm); padding: 1.2rem; border-radius: 8px; font-size: 0.8rem;">
+                <div style="margin-bottom: 1rem;">
+                  <strong style="color: #6a8caf; font-weight: 500; display: block; margin-bottom: 0.2rem; font-size: 0.85rem;">외곽순환도로</strong>
+                  <span style="color: var(--color-text-light);">김포대로(김포공항방면) → 공항사거리 좌회전(신방화역 방면) → 마곡나루역</span>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                  <strong style="color: #6a8caf; font-weight: 500; display: block; margin-bottom: 0.2rem; font-size: 0.85rem;">올림픽대로 (고속도로 이용)</strong>
+                  <span style="color: var(--color-text-light);">김포공항방면 → 발산역 방면 도시고속도로 출구 → 양천향교역 우회전(서남물재생센터 방면) → 마곡나루역 방면 좌회전 → 마곡중앙 5로 우회전(방화로 방면)</span>
+                </div>
+                <div>
+                  <strong style="color: #6a8caf; font-weight: 500; display: block; margin-bottom: 0.2rem; font-size: 0.85rem;">남부순환로</strong>
+                  <span style="color: var(--color-text-light);">신월IC → 강서면허시험장 우회전(마곡역 방면) → 마곡나루역 삼거리 좌회전(방화로 방면)</span>
+                </div>
+              </div>
 
-                // 5. 초기 실행
-                initialPlay();
-                
-            });
-        </script>
-    </body>
+            </div>
+          </div>
+          
+        </div>
+        
+        <!-- Calendar -->
+        <!-- <div class="calendar-inline animate-item" data-animate="scale-in">
+          <div class="calendar" id="calendarGrid"></div>
+          <div class="calendar-actions">
+            <a class="btn btn--outline" id="googleCalBtn" href="#" target="_blank" rel="noopener">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+              Google 캘린더
+            </a>
+            <button class="btn btn--outline" id="icsDownloadBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16l2 2 2-2"/></svg>
+              Apple 캘린더
+            </button>
+          </div>
+        </div>
+      </div> -->
+    </section>
+
+    <!-- ───information─── -->
+    
+    <section class="section information" id="information">
+      <div class="section__inner">
+        
+        <h2 class="section__title animate-item" data-animate="fade-up">안내 사항</h2>
+        <p class="animate-item" data-animate="fade-up" style="font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 2rem;">주차 및 연회장 이용 안내</p>
+
+        <div class="animate-item" data-animate="fade-up" style="background: var(--color-bg-warm); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; text-align: left; border: 1px solid var(--color-border);">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem; color: var(--color-forest);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 10l1.5-4.5A2 2 0 018.4 4h7.2a2 2 0 011.9 1.5L19 10"/><path d="M3 10h18v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5z"/><circle cx="7" cy="14" r="1.5"/><circle cx="17" cy="14" r="1.5"/></svg>
+            <h3 style="font-size: 1rem; font-weight: 500; margin: 0;">주차 안내</h3>
+          </div>
+          <p style="font-family: var(--font-sans); font-size: 0.875rem; color: var(--color-text-light); line-height: 1.6; word-break: keep-all; margin: 0;">
+            예식장 앞 안내 요원의 지시에 따라 <strong style="color: var(--color-text); font-weight: 500;">보타닉파크 푸르지오 시티</strong> 건물 내 주차장을 이용해 주시기 바랍니다.<br>
+            <span style="display: inline-block; margin-top: 0.5rem; color: var(--color-sage); font-weight: 500;">※ 예식장 로비층 인포데스크에서 주차권 인증 (무료주차 2시간)</span>
+          </p>
+        </div>
+
+        <div class="animate-item" data-animate="fade-up" style="background: var(--color-bg-warm); padding: 1.5rem; border-radius: 8px; text-align: left; border: 1px solid var(--color-border);">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem; color: var(--color-forest);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
+            <h3 style="font-size: 1rem; font-weight: 500; margin: 0;">연회장 안내</h3>
+          </div>
+          <p style="font-family: var(--font-sans); font-size: 0.875rem; color: var(--color-text-light); line-height: 1.6; word-break: keep-all; margin: 0;">
+            하객분들의 편안한 식사를 위해 연회장은 예식 30분 전인 <strong style="color: var(--color-text); font-weight: 500;">오후 2시 20분</strong>부터 이용 가능합니다.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── Leaf Divider ─── -->
+    <div class="leaf-divider" aria-hidden="true">
+      <svg viewBox="0 0 200 30" preserveAspectRatio="none">
+        <path d="M80 15 Q90 5 100 15 Q110 25 120 15" stroke="var(--color-sage)" stroke-width="1" fill="none" opacity="0.5"/>
+        <path d="M92 12 C96 6 104 6 108 12 C104 9 96 9 92 12z" fill="var(--color-sage)" opacity="0.3"/>
+      </svg>
+    </div>
+
+    <!-- ─── Account Section (축의금) ─── -->
+    <section class="section account" id="account">
+      <div class="section__inner">
+        <div class="botanical-ornament animate-item" data-animate="fade-in" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+            <path d="M15 28 C8 22 3 15 8 8 C13 1 15 8 15 15" stroke="var(--color-sage)" stroke-width="1" fill="var(--color-sage)" fill-opacity="0.15"/>
+            <path d="M15 28 C22 22 27 15 22 8 C17 1 15 8 15 15" stroke="var(--color-sage)" stroke-width="1" fill="var(--color-sage)" fill-opacity="0.15"/>
+          </svg>
+        </div>
+        <h2 class="section__title animate-item" data-animate="fade-up">마음 전하실 곳</h2>
+        <p class="account__desc animate-item" data-animate="fade-up">저희의 첫걸음을 축복해 주시는 <br> 정성에 보답하며 잘 살겠습니다.</p>
+
+        <!-- Groom Accounts -->
+        <div class="accordion animate-item" data-animate="fade-up">
+          <button class="accordion__trigger" id="groomAccordion" aria-expanded="false">
+            <span class="accordion__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6.5 2 2 6.5 2 12c0 3 2.5 6.5 10 10 7.5-3.5 10-7 10-10 0-5.5-4.5-10-10-10z"/><path d="M12 2v20"/></svg>
+            </span>
+            <span>신랑측 계좌번호</span>
+            <svg class="accordion__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="accordion__panel" id="groomAccordionPanel">
+            <div class="accordion__panel-inner" id="groomAccountList"></div>
+          </div>
+        </div>
+
+        <!-- Bride Accounts -->
+        <div class="accordion animate-item" data-animate="fade-up">
+          <button class="accordion__trigger" id="brideAccordion" aria-expanded="false">
+            <span class="accordion__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6.5 2 2 6.5 2 12c0 3 2.5 6.5 10 10 7.5-3.5 10-7 10-10 0-5.5-4.5-10-10-10z"/><path d="M12 2v20"/></svg>
+            </span>
+            <span>신부측 계좌번호</span>
+            <svg class="accordion__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="accordion__panel" id="brideAccordionPanel">
+            <div class="accordion__panel-inner" id="brideAccountList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section closing" id="closing" style="text-align: center;">
+      <div class="section__inner">
+        
+        <h2 class="section__title animate-item" data-animate="fade-up" style="font-family: 'Pinyon Script', var(--font-serif); font-size: 2.0rem; color: var(--color-accent); text-transform: capitalize; margin-bottom: 2rem;">
+          Thank You
+        </h2>
+
+        <p class="closing__message animate-item" data-animate="fade-up" style="color: var(--color-text); line-height: 1.8; font-size: 1.05rem;">
+          소중한 분들의 참석과 축복이<br>
+          저희에게 가장 큰 선물입니다.<br><br>
+          감사합니다.
+        </p>
+
+        <div class="bible-verse animate-item" data-animate="fade-up" style="margin-top: 3rem; padding: 2.5rem 1.5rem; background: var(--color-bg-warm); border-radius: 12px; border: 1px solid var(--color-border);">
+          
+          <div style="margin-bottom: 1.5rem;">
+            <p style="color: var(--color-text); line-height: 1.6; font-size: 0.95rem;">
+              "과거세에 오랫동안 함께 살았거나 현세에 서로 은혜를 나눔으로써 사랑이 생겨나니,<br>이는 마치 물속에서 <br>연꽃이 피어나는 것과 같다."  
+            </p>
+            <p style="color: var(--color-text-muted); font-size: 0.85rem; margin-top: 0.6rem;">
+              본생경(本生經)
+            </p>
+          </div>
+
+          <div>
+            <p style="color: var(--color-text); line-height: 1.6; font-size: 0.9rem; font-style: italic;">
+              "Through living together in the past <br>or being beneficial in the present,<br>in this way love arises,<br>like a water-lily arises on the water."
+            </p>
+            <p style="color: var(--color-text-muted); font-size: 0.8rem; margin-top: 0.6rem;">
+              Jataka
+            </p>
+          </div>
+        </div>
+
+        <div class="animate-item" data-animate="fade-up" style="margin-top: 3rem; display: flex; justify-content: center;">
+          <img src="./images/icon/flower.png" alt="꽃 아이콘" style="width: 60px; height: auto; opacity: 0.8;">
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- Sharing -->
+    <section class="section share" id="share" style="text-align: center; padding: 2rem 0 4rem;">
+      <div class="section__inner">
+        <div class="animate-item" data-animate="fade-up" style="display: flex; flex-direction: column; gap: 0.8rem; max-width: 400px; margin: 0 auto; width: 100%;">
+          
+          <button id="btnKakaoShare" class="btn btn--kakao" style="width: 100%; padding: 1rem; font-size: 0.9rem; font-weight: 500;">
+            카카오톡으로 청첩장 전하기
+          </button>
+          
+          <button id="btnLinkShare" class="btn btn--outline" style="width: 100%; padding: 1rem; font-size: 0.9rem; font-weight: 500;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-right: 0.2rem;"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            청첩장 주소 복사하기
+          </button>
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Footer ─── -->
+    <footer class="footer">
+      <div class="footer__leaf" aria-hidden="true">
+        <svg width="20" height="24" viewBox="0 0 20 24" fill="none">
+          <path d="M10 22 C4 17 1 11 5 5 C9 -1 10 5 10 10" stroke="var(--color-sage)" stroke-width="0.8" fill="var(--color-sage)" fill-opacity="0.15"/>
+          <path d="M10 22 C16 17 19 11 15 5 C11 -1 10 5 10 10" stroke="var(--color-sage)" stroke-width="0.8" fill="var(--color-sage)" fill-opacity="0.15"/>
+        </svg>
+      </div>
+      <p class="footer__text" id="footerText"></p>
+    </footer>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
 </html>
