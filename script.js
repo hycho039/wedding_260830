@@ -713,36 +713,20 @@
      Sharing Section (청첩장 공유)
      ═══════════════════════════════════════════ */
 
+  /* ═══════════════════════════════════════════
+   Share Section (공유하기)
+   ═══════════════════════════════════════════ */
   function initShare() {
-    const btnLinkShare = $('#btnLinkShare');
-    const btnKakaoShare = $('#btnKakaoShare');
-    const currentUrl = window.location.href; // 현재 청첩장 주소
+    // 1. 버튼 요소를 정확하게 찾습니다.
+    const btnKakaoShare = document.getElementById('btnKakaoShare');
+    const btnLinkShare = document.getElementById('btnLinkShare');
 
-    // 1. 일반 링크 공유 (Web Share API 또는 클립보드 복사)
-    if (btnLinkShare) {
-      btnLinkShare.addEventListener('click', async () => {
-        // 모바일 기기에서 지원하는 네이티브 공유 메뉴 띄우기
-        if (navigator.share) {
-          try {
-            await navigator.share({
-              title: CONFIG.meta.title,
-              text: CONFIG.meta.description,
-              url: currentUrl
-            });
-          } catch (err) {
-            console.log('공유 취소 또는 에러:', err);
-          }
-        } else {
-          // PC 등 Web Share API를 지원하지 않는 브라우저에서는 링크 복사로 대체
-          copyToClipboard(currentUrl, '초대장 주소가 복사되었습니다');
-        }
-      });
-    }
-
-    // 2. 카카오톡 공유
+    // 2. 카카오톡 공유 기능
     if (btnKakaoShare && typeof Kakao !== 'undefined') {
-      Kakao.init('4f4c17caf8284d8281d80fb3d367a203'); 
-      Kakao.isInitialized();
+      // 💡 중복 초기화 방지: 아직 초기화되지 않았을 때만 init을 실행합니다.
+      if (!Kakao.isInitialized()) {
+        Kakao.init('875bcfe2766265d959465f6084e8d6a0'); 
+      }
 
       btnKakaoShare.addEventListener('click', () => {
         Kakao.Share.sendDefault({
@@ -750,7 +734,8 @@
           content: {
             title: CONFIG.meta.title,
             description: CONFIG.meta.description,
-            imageUrl: 'https://github.com/hycho039/wedding_260830/images/og/1.jpg',
+            // 💡 수정됨: github.com이 아닌 github.io 호스팅 주소로 변경해야 이미지가 뜹니다!
+            imageUrl: 'https://hycho039.github.io/wedding_260830/images/og/1.jpg',
             link: {
               mobileWebUrl: 'https://hycho039.github.io/wedding_260830/',
               webUrl: 'https://hycho039.github.io/wedding_260830/',
@@ -767,6 +752,26 @@
           ],
           installTalk: true,
         });
+      });
+    }
+
+    // 3. 일반 링크 공유 기능 (주소 복사)
+    if (btnLinkShare) {
+      btnLinkShare.addEventListener('click', async () => {
+        const currentUrl = 'https://hycho039.github.io/wedding_260830/';
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: CONFIG.meta.title,
+              text: CONFIG.meta.description,
+              url: currentUrl
+            });
+          } catch (err) {
+            console.log('공유 취소:', err);
+          }
+        } else {
+          copyToClipboard(currentUrl, '청첩장 주소가 복사되었습니다');
+        }
       });
     }
   }
