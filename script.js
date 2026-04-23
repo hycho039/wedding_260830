@@ -751,16 +751,16 @@
             description: CONFIG.meta.description,
             imageUrl: 'https://github.com/hycho039/wedding_260830/images/og/1.jpg',
             link: {
-              mobileWebUrl: currentUrl,
-              webUrl: currentUrl,
+              mobileWebUrl: 'https://hycho039.github.io/wedding_260830/',
+              webUrl: 'https://hycho039.github.io/wedding_260830/',
             },
           },
           buttons: [
             {
               title: '모바일 청첩장 보기',
               link: {
-                mobileWebUrl: currentUrl,
-                webUrl: currentUrl,
+                mobileWebUrl: 'https://hycho039.github.io/wedding_260830/',
+                webUrl: 'https://hycho039.github.io/wedding_260830/',
               },
             },
           ],
