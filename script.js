@@ -741,7 +741,8 @@
 
     // 2. 카카오톡 공유
     if (btnKakaoShare && typeof Kakao !== 'undefined') {
-      Kakao.init('875bcfe2766265d959465f6084e8d6a0'); 
+      Kakao.init('4f4c17caf8284d8281d80fb3d367a203'); 
+      Kakao.isInitialized();
 
       btnKakaoShare.addEventListener('click', () => {
         Kakao.Share.sendDefault({
@@ -764,6 +765,7 @@
               },
             },
           ],
+          installTalk: true,
         });
       });
     }
