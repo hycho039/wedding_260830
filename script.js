@@ -717,6 +717,7 @@
    Share Section (공유하기)
    ═══════════════════════════════════════════ */
   function initShare() {
+    console.log("공유하기 버튼 세팅 시작!");
     // 1. 버튼 요소를 정확하게 찾습니다.
     const btnKakaoShare = document.getElementById('btnKakaoShare');
     const btnLinkShare = document.getElementById('btnLinkShare');
