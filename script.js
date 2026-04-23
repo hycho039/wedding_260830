@@ -749,7 +749,7 @@
           content: {
             title: CONFIG.meta.title,
             description: CONFIG.meta.description,
-            imageUrl: 'https://hycho039.gihtub.io/wedding_260830/images/og/1.jpg',
+            imageUrl: 'https://github.com/hycho039/wedding_260830/images/og/1.jpg',
             link: {
               mobileWebUrl: currentUrl,
               webUrl: currentUrl,
