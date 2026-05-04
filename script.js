@@ -554,7 +554,11 @@
   let touchStartY = 0;
   let touchEndY = 0;
 
+  let scrollPosition = 0;
+
   function openPhotoModal(images, index) {
+    scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
     modalImages = images;
     modalIndex = index;
     showModalImage();
@@ -565,6 +569,8 @@
   function closePhotoModal() {
     $('#photoModal').classList.remove('is-open');
     document.body.classList.remove('no-scroll');
+    document.body.style.top = '';
+    window.scrollTo(0, scrollPosition);
   }
 
   function showModalImage() {
