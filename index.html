@@ -261,11 +261,19 @@
     </div>
 
     <!-- ─── Gallery Section ─── -->
-    <section class="section gallery" id="gallery">
+<!--     <section class="section gallery" id="gallery">
       <div class="section__inner">
         <h2 class="section__title animate-item" data-animate="fade-up">갤러리</h2>
         <p class="section__text animate-item" data-animate="fade-up">갤러리는 7월 중 정식 오픈할 예정입니다.</p>
         <div class="gallery__grid" id="galleryGrid" style="display: none;"></div>
+      </div>
+    </section> -->
+
+    <!-- ─── Gallery Section ─── -->
+    <section class="section gallery" id="gallery">
+      <div class="section__inner">
+        <h2 class="section__title animate-item" data-animate="fade-up">갤러리</h2>
+        <div class="gallery__grid" id="galleryGrid"></div>
       </div>
     </section>
 
@@ -278,123 +286,6 @@
       </svg>
     </div>
 
-    <!-- ─── Location Section ─── -->
-   <!--  <section class="section location" id="location">
-      <div class="section__inner">
-        <h2 class="section__title animate-item" data-animate="fade-up">오시는 길</h2>
-        <div class="location__info animate-item" data-animate="fade-up">
-          <p class="location__venue" id="locationVenue"></p>
-          <p class="location__hall" id="locationHall"></p>
-          <p class="location__address" id="locationAddress"></p>
-          <p class="location__tel" id="locationTel"></p>
-        </div>
-        <button class="btn btn--text location__copy animate-item" data-animate="fade-up" id="copyAddressBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          주소 복사
-        </button>
-        <div class="location__map animate-item" data-animate="scale-in">
-          <img class="location__map-img" id="locationMapImg" src="" alt="약도" loading="lazy">
-        </div>
-        <div class="location__links animate-item" data-animate="fade-up">
-          <a class="btn btn--kakao" id="kakaoMapBtn" href="#" target="_blank" rel="noopener">카카오맵</a>
-          <a class="btn btn--naver" id="naverMapBtn" href="#" target="_blank" rel="noopener">네이버지도</a>
-        </div>
-        <div style="width: 24px; height: 2px; background: var(--color-border); margin: 0 auto 1.5rem; border-radius: 2px;"></div>
-        <div class="location__transport animate-item" data-animate="fade-up" style="margin-bottom: 2.5rem;">
-          
-          <div style="margin-bottom: 1.5rem; text-align: center;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.6rem;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="1.5"><path d="M6 3h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M8 17l-2 4h12l-2-4"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><path d="M4 8h16"/></svg>
-              <span style="font-family: var(--font-sans); font-size: 0.8rem; font-weight: 500; color: var(--color-text-muted); letter-spacing: 1px;">지하철</span>
-            </div>
-            <div style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 300; color: var(--color-text-light); line-height: 1.6; word-break: keep-all;">
-              <p><strong style="color: #6a8caf; font-weight: 500;">9호선</strong> <span style="color: var(--color-divider); margin: 0 4px;">|</span> 마곡나루역 1, 2번 출구방면 진입통로 연결</p>
-              <p style="margin-top: 0.3rem;"><strong style="color: #6a8caf; font-weight: 500;">공항철도</strong> <span style="color: var(--color-divider); margin: 0 4px;">|</span> 9호선 환승역 방향 마곡나루역 1, 2번 출구 <br> 진입통로 연결</p>
-            </div>
-          </div>
-
-          <div style="width: 24px; height: 2px; background: var(--color-border); margin: 0 auto 1.5rem; border-radius: 2px;"></div>
-
-          <div style="margin-bottom: 1.5rem; text-align: center;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.6rem;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="1.5"><path d="M4 6a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"/><path d="M8 22v-4"/><path d="M16 22v-4"/><circle cx="8" cy="14" r="1.5"/><circle cx="16" cy="14" r="1.5"/><path d="M4 10h16"/></svg>
-              <span style="font-family: var(--font-sans); font-size: 0.8rem; font-weight: 500; color: var(--color-text-muted); letter-spacing: 1px;">버스</span>
-            </div>
-            <div style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 300; color: var(--color-text-light); line-height: 1.6; word-break: keep-all;">
-              <p style="margin-bottom: 0.4rem;">마곡나루역 정류장 하차</p>
-              <p style="font-size: 0.8rem; background: var(--color-bg-warm); padding: 0.6rem 0.8rem; border-radius: 6px; display: inline-block;">
-                <span style="color: #528AAE; font-weight: 500;">간선</span> N64 <span style="color: var(--color-divider); margin: 0 4px;">|</span> 
-                <span style="color: #6a8caf; font-weight: 500;">지선</span> 6642, 6645, 6648 <span style="color: var(--color-divider); margin: 0 4px;">|</span> 
-                <span style="color: #73A5C6; font-weight: 500;">마을</span> 강서05-1, 강서07
-              </p>
-            </div>
-          </div>
-
-          <div style="width: 24px; height: 2px; background: var(--color-border); margin: 0 auto 1.5rem; border-radius: 2px;"></div>
-
-          <div style="margin-bottom: 1.5rem; text-align: center;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.6rem;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="1.5"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M8 22v-2"/><path d="M16 22v-2"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="4" y1="11" x2="20" y2="11"/></svg>
-              <span style="font-family: var(--font-sans); font-size: 0.8rem; font-weight: 500; color: var(--color-text-muted); letter-spacing: 1px;">지방하객 교통안내</span>
-            </div>
-            <div style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 300; color: var(--color-text-light); line-height: 1.6; word-break: keep-all; text-align: left; display: inline-block; width: 100%;">
-              <div style="background: var(--color-bg-warm); padding: 1.2rem; border-radius: 8px; font-size: 0.8rem;">
-                
-                <div style="margin-bottom: 1.2rem;">
-                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.3rem;">
-                    <strong style="color: #6a8caf; font-weight: 500; font-size: 0.85rem;">기차 KTX</strong>
-                    <span style="font-size: 0.7rem; color: var(--color-text-muted); background: var(--color-white); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--color-divider);">약 29분 소요</span>
-                  </div>
-                  <strong style="color: var(--color-text); font-weight: 500; display: block; margin-bottom: 0.1rem;">서울역 하차 시</strong>
-                  <span style="color: var(--color-text-light);">공항철도 서울역 승차 → 마곡나루역 하차</span>
-                </div>
-
-                <div>
-                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.3rem;">
-                    <strong style="color: #6a8caf; font-weight: 500; font-size: 0.85rem;">고속버스</strong>
-                    <span style="font-size: 0.7rem; color: var(--color-text-muted); background: var(--color-white); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--color-divider);">약 30분 소요</span>
-                  </div>
-                  <strong style="color: var(--color-text); font-weight: 500; display: block; margin-bottom: 0.1rem;">서울고속버스터미널 하차 시</strong>
-                  <span style="color: var(--color-text-light);">9호선 고속터미널역 (급행) 승차 → 마곡나루역 하차</span>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          <div style="width: 24px; height: 2px; background: var(--color-border); margin: 0 auto 1.5rem; border-radius: 2px;"></div>
-
-          <div style="text-align: center;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.6rem;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="1.5"><path d="M5 10l1.5-4.5A2 2 0 018.4 4h7.2a2 2 0 011.9 1.5L19 10"/><path d="M3 10h18v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5z"/><circle cx="7" cy="14" r="1.5"/><circle cx="17" cy="14" r="1.5"/></svg>
-              <span style="font-family: var(--font-sans); font-size: 0.8rem; font-weight: 500; color: var(--color-text-muted); letter-spacing: 1px;">자가용</span>
-            </div>
-            <div style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 300; color: var(--color-text-light); line-height: 1.6; word-break: keep-all; text-align: left; display: inline-block; width: 100%;">
-              
-              <p style="text-align: center; margin-bottom: 1rem;">
-                네비게이션 : <strong style="color: var(--color-forest); font-weight: 500;">보타닉파크웨딩 주차장</strong> 또는 <strong style="color: var(--color-forest); font-weight: 500;">마곡동 760</strong>
-              </p>
-
-              <div style="background: var(--color-bg-warm); padding: 1.2rem; border-radius: 8px; font-size: 0.8rem;">
-                <div style="margin-bottom: 1rem;">
-                  <strong style="color: #6a8caf; font-weight: 500; display: block; margin-bottom: 0.2rem; font-size: 0.85rem;">외곽순환도로</strong>
-                  <span style="color: var(--color-text-light);">김포대로(김포공항방면) → 공항사거리 좌회전(신방화역 방면) → 마곡나루역</span>
-                </div>
-                <div style="margin-bottom: 1rem;">
-                  <strong style="color: #6a8caf; font-weight: 500; display: block; margin-bottom: 0.2rem; font-size: 0.85rem;">올림픽대로 (고속도로 이용)</strong>
-                  <span style="color: var(--color-text-light);">김포공항방면 → 발산역 방면 도시고속도로 출구 → 양천향교역 우회전(서남물재생센터 방면) → 마곡나루역 방면 좌회전 → 마곡중앙 5로 우회전(방화로 방면)</span>
-                </div>
-                <div>
-                  <strong style="color: #6a8caf; font-weight: 500; display: block; margin-bottom: 0.2rem; font-size: 0.85rem;">남부순환로</strong>
-                  <span style="color: var(--color-text-light);">신월IC → 강서면허시험장 우회전(마곡역 방면) → 마곡나루역 삼거리 좌회전(방화로 방면)</span>
-                </div>
-              </div>
-
-            </div>
-          </div>
-          
-        </div>
-    </section> -->
     <section class="section location" id="location">
       <div class="section__inner">
         <h2 class="section__title animate-item" data-animate="fade-up">오시는 길</h2>
