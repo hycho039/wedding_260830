@@ -117,7 +117,7 @@
     };
     setMeta('property', 'og:title', m.title);
     setMeta('property', 'og:description', m.description);
-    setMeta('property', 'og:image', 'images/og/1.jpg');
+    setMeta('property', 'og:image', 'images/og/v1.jpg');
     setMeta('name', 'description', m.description);
   }
 
@@ -742,7 +742,7 @@
             title: CONFIG.meta.title,
             description: CONFIG.meta.description,
             // 💡 수정됨: github.com이 아닌 github.io 호스팅 주소로 변경해야 이미지가 뜹니다!
-            imageUrl: 'https://hycho039.github.io/wedding_260830/images/og/1.jpg',
+            imageUrl: 'https://hycho039.github.io/wedding_260830/images/og/v1.jpg',
             link: {
               mobileWebUrl: 'https://hycho039.github.io/wedding_260830/',
               webUrl: 'https://hycho039.github.io/wedding_260830/',
