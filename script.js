@@ -855,7 +855,7 @@
      ═══════════════════════════════════════════ */
 
   async function init() {
-    setMetaTags();
+    // setMetaTags();
     initCurtain();
     initHero();
     initCountdown();
