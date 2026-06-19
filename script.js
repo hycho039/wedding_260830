@@ -547,21 +547,136 @@
      Photo Modal (with swipe)
      ═══════════════════════════════════════════ */
 
+  // let modalImages = [];
+  // let modalIndex = 0;
+  // let touchStartX = 0;
+  // let touchEndX = 0;
+  // let touchStartY = 0;
+  // let touchEndY = 0;
+
+  // let scrollPosition = 0;
+
+  // function openPhotoModal(images, index) {
+  //   scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
+  //   modalImages = images;
+  //   modalIndex = index;
+  //   showModalImage();
+  //   $('#photoModal').classList.add('is-open');
+  //   document.body.classList.add('no-scroll');
+  // }
+
+  // function closePhotoModal() {
+  //   $('#photoModal').classList.remove('is-open');
+  //   document.body.classList.remove('no-scroll');
+  //   document.body.style.top = '';
+  //   window.scrollTo(0, scrollPosition);
+  // }
+
+  // function showModalImage() {
+  //   const img = $('#modalImg');
+  //   img.src = modalImages[modalIndex];
+  //   $('#modalCounter').textContent = `${modalIndex + 1} / ${modalImages.length}`;
+
+  //   $('#modalPrev').style.display = modalIndex > 0 ? '' : 'none';
+  //   $('#modalNext').style.display = modalIndex < modalImages.length - 1 ? '' : 'none';
+  // }
+
+  // function modalNavigate(dir) {
+  //   const newIndex = modalIndex + dir;
+  //   if (newIndex >= 0 && newIndex < modalImages.length) {
+  //     modalIndex = newIndex;
+  //     showModalImage();
+  //   }
+  // }
+
+  // function initPhotoModal() {
+  //   $('#modalClose').addEventListener('click', closePhotoModal);
+  //   $('#modalPrev').addEventListener('click', () => modalNavigate(-1));
+  //   $('#modalNext').addEventListener('click', () => modalNavigate(1));
+
+  //   const modal = $('#photoModal');
+  //   modal.addEventListener('click', (e) => {
+  //     if (e.target === modal || e.target.id === 'modalContainer') {
+  //       closePhotoModal();
+  //     }
+  //   });
+
+  //   // Keyboard navigation
+  //   document.addEventListener('keydown', (e) => {
+  //     if (!modal.classList.contains('is-open')) return;
+  //     if (e.key === 'Escape') closePhotoModal();
+  //     if (e.key === 'ArrowLeft') modalNavigate(-1);
+  //     if (e.key === 'ArrowRight') modalNavigate(1);
+  //   });
+
+  //   // Swipe support
+  //   const container = $('#modalContainer');
+
+  //   container.addEventListener('touchstart', (e) => {
+  //     touchStartX = e.changedTouches[0].screenX;
+  //     touchStartY = e.changedTouches[0].screenY;
+  //   }, { passive: true });
+
+  //   container.addEventListener('touchend', (e) => {
+  //     touchEndX = e.changedTouches[0].screenX;
+  //     touchEndY = e.changedTouches[0].screenY;
+  //     handleSwipe();
+  //   }, { passive: true });
+  // }
+
+  // function handleSwipe() {
+  //   const diffX = touchStartX - touchEndX;
+  //   const diffY = touchStartY - touchEndY;
+  //   const minSwipe = 50;
+
+  //   if (Math.abs(diffX) < minSwipe || Math.abs(diffX) < Math.abs(diffY)) return;
+
+  //   if (diffX > 0) {
+  //     modalNavigate(1);  // swipe left -> next
+  //   } else {
+  //     modalNavigate(-1); // swipe right -> prev
+  //   }
+  // }
+
+/* ═══════════════════════════════════════════
+     Photo Modal (Swipe, Pinch Zoom, Double Tap)
+   ═══════════════════════════════════════════ */
+
   let modalImages = [];
   let modalIndex = 0;
+  let scrollPosition = 0;
+
+  // Zoom 관련 상태 변수
+  let currentScale = 1;
+  let isZooming = false;
+  let startDistance = 0;
+  let startScale = 1;
+  
+  // Pan(이동) 관련 상태 변수
+  let currentX = 0;
+  let currentY = 0;
+  let startX = 0;
+  let startY = 0;
+  let isPanning = false;
+
+  // Swipe 관련 변수
   let touchStartX = 0;
   let touchEndX = 0;
   let touchStartY = 0;
   let touchEndY = 0;
 
-  let scrollPosition = 0;
+  // Double tap 관련 변수
+  let lastTapTime = 0;
 
   function openPhotoModal(images, index) {
     scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
 
     modalImages = images;
     modalIndex = index;
+    resetZoomState(); // 열 때 확대 상태 초기화
     showModalImage();
+    
     $('#photoModal').classList.add('is-open');
     document.body.classList.add('no-scroll');
   }
@@ -571,10 +686,38 @@
     document.body.classList.remove('no-scroll');
     document.body.style.top = '';
     window.scrollTo(0, scrollPosition);
+    resetZoomState(); // 닫을 때 확대 상태 초기화
+  }
+
+  function resetZoomState() {
+    currentScale = 1;
+    currentX = 0;
+    currentY = 0;
+    updateImageTransform();
+  }
+
+  function updateImageTransform() {
+    const img = $('#modalImg');
+    // scale이 1이하로 내려가지 않도록 제한
+    if (currentScale < 1) {
+        currentScale = 1;
+        currentX = 0;
+        currentY = 0;
+    }
+    
+    // 확대 상태가 아닐 때는 부드러운 전환 효과(transition) 적용, 확대 중일 때는 즉각 반응하도록 제거
+    if (!isZooming && !isPanning) {
+        img.style.transition = 'transform 0.3s ease-out';
+    } else {
+        img.style.transition = 'none';
+    }
+    
+    img.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) scale(${currentScale})`;
   }
 
   function showModalImage() {
     const img = $('#modalImg');
+    resetZoomState(); // 사진이 바뀔 때마다 확대 상태 초기화
     img.src = modalImages[modalIndex];
     $('#modalCounter').textContent = `${modalIndex + 1} / ${modalImages.length}`;
 
@@ -590,12 +733,21 @@
     }
   }
 
+  // 두 터치 지점 간의 거리를 계산하는 헬퍼 함수 (핀치 투 줌용)
+  function getDistance(touches) {
+    return Math.hypot(
+        touches[0].clientX - touches[1].clientX,
+        touches[0].clientY - touches[1].clientY
+    );
+  }
+
   function initPhotoModal() {
     $('#modalClose').addEventListener('click', closePhotoModal);
     $('#modalPrev').addEventListener('click', () => modalNavigate(-1));
     $('#modalNext').addEventListener('click', () => modalNavigate(1));
 
     const modal = $('#photoModal');
+    // 모달 바깥 영역 클릭 시 닫기 (이미지를 클릭했을 때는 안 닫히도록)
     modal.addEventListener('click', (e) => {
       if (e.target === modal || e.target.id === 'modalContainer') {
         closePhotoModal();
@@ -610,22 +762,106 @@
       if (e.key === 'ArrowRight') modalNavigate(1);
     });
 
-    // Swipe support
+    // 터치 이벤트 설정
     const container = $('#modalContainer');
 
-    container.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-      touchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
+    container.addEventListener('touchstart', handleTouchStart, { passive: false });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd, { passive: false });
+    container.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+    
+    // PC 마우스 휠을 통한 확대/축소 (선택 사항)
+    container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        currentScale = Math.min(Math.max(1, currentScale + delta), 4); // 최대 4배
+        updateImageTransform();
+    }, { passive: false });
+  }
 
-    container.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      touchEndY = e.changedTouches[0].screenY;
-      handleSwipe();
-    }, { passive: true });
+  function handleTouchStart(e) {
+    if (e.touches.length === 2) {
+        // 핀치 투 줌 시작
+        isZooming = true;
+        isPanning = false;
+        startDistance = getDistance(e.touches);
+        startScale = currentScale;
+    } else if (e.touches.length === 1) {
+        // 더블 탭 처리
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTapTime;
+        
+        if (tapLength < 300 && tapLength > 0) {
+            // 더블 탭: 확대된 상태면 축소, 축소된 상태면 2.5배 확대
+            e.preventDefault();
+            if (currentScale > 1) {
+                resetZoomState();
+            } else {
+                currentScale = 2.5;
+                updateImageTransform();
+            }
+        } else {
+            // 단일 터치 (이동 또는 스와이프 준비)
+            touchStartX = e.touches[0].screenX;
+            touchStartY = e.touches[0].screenY;
+            
+            if (currentScale > 1) {
+                // 확대된 상태에서는 이미지 이동(Panning)
+                isPanning = true;
+                startX = touchStartX - currentX;
+                startY = touchStartY - currentY;
+            }
+        }
+        lastTapTime = currentTime;
+    }
+  }
+
+  function handleTouchMove(e) {
+    if (isZooming && e.touches.length === 2) {
+        // 핀치 투 줌 진행 중
+        e.preventDefault();
+        const currentDistance = getDistance(e.touches);
+        // 확대 배율 계산 (최대 4배 제한)
+        currentScale = Math.min(Math.max(1, startScale * (currentDistance / startDistance)), 4);
+        updateImageTransform();
+    } else if (isPanning && currentScale > 1 && e.touches.length === 1) {
+        // 확대된 상태에서 이미지 이동 중
+        e.preventDefault();
+        const touch = e.touches[0];
+        
+        // 이동 범위 계산
+        currentX = touch.screenX - startX;
+        currentY = touch.screenY - startY;
+        
+        updateImageTransform();
+    }
+  }
+
+  function handleTouchEnd(e) {
+    if (isZooming && e.touches.length < 2) {
+        // 핀치 투 줌 종료
+        isZooming = false;
+        if (currentScale <= 1) {
+            resetZoomState();
+        }
+    } else if (isPanning) {
+        // 이동 종료
+        isPanning = false;
+        if (currentScale <= 1) {
+             resetZoomState();
+        }
+    } else if (e.changedTouches.length === 1 && currentScale === 1) {
+        // 확대되지 않은 상태에서 단일 터치 종료 시 스와이프 동작 처리
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        handleSwipe();
+    }
   }
 
   function handleSwipe() {
+    // 확대된 상태에서는 스와이프로 사진이 넘어가지 않도록 차단
+    if (currentScale > 1) return;
+
     const diffX = touchStartX - touchEndX;
     const diffY = touchStartY - touchEndY;
     const minSwipe = 50;
@@ -638,7 +874,6 @@
       modalNavigate(-1); // swipe right -> prev
     }
   }
-
   /* ═══════════════════════════════════════════
      Location Section
      ═══════════════════════════════════════════ */
